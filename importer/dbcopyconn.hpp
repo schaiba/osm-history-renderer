@@ -128,12 +128,12 @@ public:
         int cpres = PQputCopyEnd(conn, NULL);
 
         // check, that the copying succeeded
-        if(-1 == cpres)
+        if(cpres == -1)
         {
             // show the error message, close the connection and throw out
             std::cerr << PQerrorMessage(conn) << std::endl;
             PQfinish(conn);
-            throw std::runtime_error("COPY FROM STDIN finilization failed");
+            throw std::runtime_error("COPY FROM STDIN finalization failed");
         }
 
         // query results are stored in this result pointer
@@ -151,14 +151,16 @@ public:
                     break;
 
                 case PGRES_FATAL_ERROR:
-                case PGRES_NONFATAL_ERROR:
                     std::cerr << "PQresultErrorMessage=" << PQresultErrorMessage(res) << std::endl;
+
+                case PGRES_NONFATAL_ERROR: 
+                    std::cerr << "PQresultErrorMessage(non-fatal)=" << PQresultErrorMessage(res) << std::endl;
 
                 default:
                     std::cerr << "PQresultStatus=" << status << std::endl;
                     PQclear(res);
                     PQfinish(conn);
-                    throw std::runtime_error("COPY FROM STDIN finilization failed");
+                    throw std::runtime_error("COPY FROM STDIN finalization failed");
             }
 
             // get the next result
