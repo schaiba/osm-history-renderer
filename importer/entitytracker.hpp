@@ -23,7 +23,7 @@ class EntityTracker {
 
 private:
     /**
-     * pointer to the current entity
+     * pointer to the previous entity
      */
     shared_ptr<TObject const> m_prev;
 
